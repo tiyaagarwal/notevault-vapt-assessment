@@ -17,6 +17,7 @@ A self-contained, reproducible black-box penetration test: a deliberately vulner
 | [`testing/manual_test_notes.md`](testing/manual_test_notes.md) | Burp Suite workflow (Proxy/Repeater/Intruder/Decoder) and manual testing checklist |
 | [`scripts/`](scripts) | Convenience scripts to run either build, plus `verify_fixes.sh` to automate the retest evidence |
 | [`SECURITY.md`](SECURITY.md) | Responsible-use disclaimer for the intentionally vulnerable build |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to add a new finding (vuln → PoC → report entry → fix → retest) |
 
 ## Findings summary
 

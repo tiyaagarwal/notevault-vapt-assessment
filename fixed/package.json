@@ -4,7 +4,8 @@
   "description": "NoteVault - remediated build after the VAPT findings were fixed",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "../scripts/verify_fixes.sh"
   },
   "license": "MIT",
   "engines": {
