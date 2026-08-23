@@ -15,7 +15,8 @@ A self-contained, reproducible black-box penetration test: a deliberately vulner
 | [`report/VAPT_Report.md`](report/VAPT_Report.md) | The full assessment: methodology, 5 detailed findings with real PoCs and CVSS scores, retest evidence, and metrics |
 | [`testing/postman_collection.json`](testing/postman_collection.json) | Importable Postman collection of every request used, grouped by finding |
 | [`testing/manual_test_notes.md`](testing/manual_test_notes.md) | Burp Suite workflow (Proxy/Repeater/Intruder/Decoder) and manual testing checklist |
-| [`scripts/`](scripts) | Convenience scripts to run either build |
+| [`scripts/`](scripts) | Convenience scripts to run either build, plus `verify_fixes.sh` to automate the retest evidence |
+| [`SECURITY.md`](SECURITY.md) | Responsible-use disclaimer for the intentionally vulnerable build |
 
 ## Findings summary
 
@@ -54,6 +55,14 @@ curl -s -c /tmp/cookies.txt -X POST http://localhost:4001/api/login \
 curl -s -b /tmp/cookies.txt http://localhost:4001/api/notes/3   # returns admin's note
 curl -s -b /tmp/cookies.txt http://localhost:4002/api/notes/3   # 403 forbidden on the fixed build
 ```
+
+Or run the whole retest suite at once with both builds up (`scripts/run_vuln_app.sh` and `scripts/run_fixed_app.sh` in separate terminals):
+
+```bash
+./scripts/verify_fixes.sh
+```
+
+This replays all 5 critical/high findings' PoCs against the fixed build and asserts each one is closed — the same checks documented in [report §4](report/VAPT_Report.md#4-remediation-verification-retest).
 
 ## Tools
 
