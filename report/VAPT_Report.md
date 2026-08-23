@@ -205,6 +205,8 @@ Additionally, `GET /api/search` returns raw SQL text and a Node.js stack trace t
 
 Every finding above was retested against the **same requests**, run against `fixed/` (`http://localhost:4002`) instead of `app/` (`http://localhost:4001`), after setting a proper `JWT_SECRET` environment variable. Real retest output:
 
+> These same checks are automated in [`scripts/verify_fixes.sh`](../scripts/verify_fixes.sh) — run it with both builds up to reproduce this table yourself.
+
 | Finding | Retest request | Result before | Result after |
 |---|---|---|---|
 | VULN-01 SQLi | Same UNION payload against `/api/search` | Full `users` table dumped | `[]` — parameterized query, no injection, scoped to caller |
