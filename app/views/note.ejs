@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head><title><%= note.title %></title></head>
+<body>
+  <h1><%= note.title %></h1>
+  <p><%= note.body %></p>
+  <h2>Comments</h2>
+  <ul>
+    <% comments.forEach(function(c) { %>
+      <li><strong><%= c.author %>:</strong> <%- c.body %></li>
+    <% }); %>
+  </ul>
+</body>
+</html>

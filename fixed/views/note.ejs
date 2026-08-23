@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head><title><%= note.title %></title></head>
+<body>
+  <h1><%= note.title %></h1>
+  <p><%= note.body %></p>
+  <h2>Comments</h2>
+  <ul>
+    <% comments.forEach(function(c) { %>
+      <!-- Remediates VULN-02: escaped output (`<%%= %>`) instead of raw (`<%%- %>`) -->
+      <li><strong><%= c.author %>:</strong> <%= c.body %></li>
+    <% }); %>
+  </ul>
+</body>
+</html>

