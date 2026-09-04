@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Remediates VULN-05: baseline security headers (in production, prefer `helmet`).
+// Remediates VULN-06: baseline security headers (in production, prefer `helmet`).
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Remediates VULN-04: basic in-memory rate limit / lockout on login attempts.
+// Remediates VULN-06: basic in-memory rate limit / lockout on login attempts.
 const loginAttempts = new Map();
 function isRateLimited(key) {
   const now = Date.now();
