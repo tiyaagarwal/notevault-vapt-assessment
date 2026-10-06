@@ -50,12 +50,18 @@ Seeded accounts on both builds: `alice` / `alice123`, `bob` / `bobpassword`, `ad
 Reproduce any finding from the report, e.g. the IDOR:
 
 ```bash
-curl -s -c /tmp/cookies.txt -X POST http://localhost:4001/api/login \
+curl -s -c /tmp/vuln_cookies.txt -X POST http://localhost:4001/api/login \
+  -H "Content-Type: application/json" -d '{"username":"alice","password":"alice123"}'
+curl -s -c /tmp/fixed_cookies.txt -X POST http://localhost:4002/api/login \
   -H "Content-Type: application/json" -d '{"username":"alice","password":"alice123"}'
 
-curl -s -b /tmp/cookies.txt http://localhost:4001/api/notes/3   # returns admin's note
-curl -s -b /tmp/cookies.txt http://localhost:4002/api/notes/3   # 403 forbidden on the fixed build
+curl -s -b /tmp/vuln_cookies.txt http://localhost:4001/api/notes/3    # returns admin's note
+curl -s -b /tmp/fixed_cookies.txt http://localhost:4002/api/notes/3  # 403 forbidden on the fixed build
 ```
+
+(Log in separately on each build — the two builds sign JWTs with different
+secrets, as described in VULN-04, so a cookie from one build's login will
+never authenticate against the other.)
 
 Or run the whole retest suite at once with both builds up (`scripts/run_vuln_app.sh` and `scripts/run_fixed_app.sh` in separate terminals):
 
